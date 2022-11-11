@@ -12,7 +12,7 @@
 #' Microbiome 2018,DOI: \url{doi: 10.1186/s40168-018-0537-x}
 #' @export
 #--提取全部分类错误的样本（  other_sample）位置#---------------------------------
-change_SRAfile <- function(path){
+change_SRAfile <- function(path,orgdata){
   fl_1 =dir(path, pattern = c(""), full.names = TRUE, ignore.case = TRUE)
 
   other_sample = c()
@@ -38,8 +38,8 @@ change_SRAfile <- function(path){
       a = gsub(".sra","",a)
       orgdata$ID = as.character(orgdata$ID)
       b = orgdata %>% filter(ID == a )
-
-      B =dir(path, pattern = c(sapply(strsplit(as.character(b$path), "/"), `[`, 3)), full.names = TRUE, ignore.case = TRUE)
+      b
+      B =dir(path, pattern = c(sapply(strsplit(as.character(b$path), "/"), `[`, length(strsplit(as.character(b$path), "/")[[1]]))), full.names = TRUE, ignore.case = TRUE)
       B
       file_move(other_sample[i],paste(B,"/SRA",sep = ""))
 

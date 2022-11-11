@@ -13,6 +13,7 @@
 #' @export
 # 这部分是新的sratool（2.10以上）需要做的工作-合并sra下载文件到同一个文件中
 merge_file <- function(path,info_path){
+
   unlink(dir(path, pattern = c("SRA"), full.names = TRUE, ignore.case = TRUE), recursive=TRUE)
 
   fl_1 =dir(path, pattern = c(""), full.names = TRUE, ignore.case = TRUE)
@@ -21,24 +22,35 @@ merge_file <- function(path,info_path){
 
 
   for (i in 1:length(fl_1 )) {
+
     fl_i =dir(fl_1[i], pattern = c(""), full.names = F, ignore.case = TRUE)
     fl_i
     A = sapply(strsplit(gsub("=","-",fl_1 [i]), "-"), `[`, 1)
     A = sapply(strsplit(A, "/"), `[`, length(strsplit(A, "/")[[1]]))
     A = gsub(".over","",A)
     A
-    orgname <- as.character(read.delim(paste(info_path,A,"SRR_Acc_List.txt",sep = "/"),header = FALSE)$V1)
-    orgname
 
-    a = paste(fl_1[i],intersect(fl_i,orgname),paste(intersect(fl_i,orgname),".sra",sep = ""),sep = "/")
-    b = as.data.frame(file_exists(a))
-    a = a[b$`file_exists(a)`]
-    a
-    dir.create(paste(fl_1[i],"/SRA",sep = ""))
-    file_move(a,paste(fl_1[i],"/SRA",sep = ""))
-    if (length(intersect(fl_i,orgname)) != 0 ) {
-      unlink(paste(fl_1[i],intersect(fl_i,orgname),sep = "/"), recursive=TRUE)
+    size <- file_info(path =paste(info_path,A,"SRR_Acc_List.txt",sep = "/")) %>%
+      # group_by(directory = path_dir(path)) %>%
+      tally(wt = size, sort = TRUE) %>%.$n
+    if (size == 0) {
+    } else{
+      orgname <- as.character(read.delim(paste(info_path,A,"SRR_Acc_List.txt",sep = "/"),header = FALSE)$V1)
+      orgname
+      a = paste(fl_1[i],intersect(fl_i,orgname),paste(intersect(fl_i,orgname),".sra",sep = ""),sep = "/")
+      b = as.data.frame(file_exists(a))
+      a = a[b$`file_exists(a)`]
+      a
+      dir.create(paste(fl_1[i],"/SRA",sep = ""))
+      file_move(a,paste(fl_1[i],"/SRA",sep = ""))
+      if (length(intersect(fl_i,orgname)) != 0 ) {
+        unlink(paste(fl_1[i],intersect(fl_i,orgname),sep = "/"), recursive=TRUE)
+      }
+
     }
+
+
+
   }
 
 }

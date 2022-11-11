@@ -12,7 +12,7 @@
 #' Microbiome 2018,DOI: \url{doi: 10.1186/s40168-018-0537-x}
 #' @export
 #统计下载完成后的下载量统计#-----------------
-print_over_Pro <- function(){
+print_over_Pro <- function(path){
 
   #--计算目前成功的项目数量
   fl_1 =dir(path, pattern = c("over"), full.names = TRUE, ignore.case = TRUE)
@@ -34,7 +34,7 @@ print_over_Pro <- function(){
   return(ss)
 }
 #---------------------尚未完成的项目统计#-----------
-print_load_Pro <- function(){
+print_load_Pro <- function(path){
 
   fl_1 =dir(path, pattern = c("="), full.names = TRUE, ignore.case = TRUE)
 
@@ -61,9 +61,9 @@ print_load_Pro <- function(){
 
 }
 
-print_Over_load_Pro<- function(){
-  a = print_over_Pro()
-  b = print_load_Pro()
+print_Over_load_Pro<- function(path){
+  a = print_over_Pro(path)
+  b = print_load_Pro(path)
   print(c(a,b))
 
 }
